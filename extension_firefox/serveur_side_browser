@@ -1,0 +1,36 @@
+// POST
+// here i create the time and date and hosts.
+d = new Date;
+time = d.toLocaleTimeString();
+date = d.toLocaleDateString();
+host = document.location.host;
+txt = "time : " + time + " date : " + date + " host : " + host;
+
+fetch('/', {
+
+    // Declare what type of data we're sending
+    headers: {
+      'Content-Type': 'application/json'
+    },
+
+    // Specify the method
+    method: 'POST',
+
+    // A JSON payload
+    body: JSON.stringify(txt)
+}).then(function (response) { // At this point, Flask has printed our JSON
+    return response.text();
+}).then(function (text) {
+
+    console.log('POST response: ');
+
+    // Should be 'OK' if everything was successful
+    console.log(text);
+});
+// On remaque que si l'url du fetch ne match pas l'url du get dans le coté
+// Serveur sur python on obtient une erreur. Donc à priori on ne peut pas
+// Faire mieux que lancer la charge utile à partir de l'url que joint FLASK.
+// Pourquoi il faut lancer post à partir de cette url, réponse :
+// |serveur| ------> |page_Web| <-------|client| le serveur écoute la page
+// Et le client envoie une charge utile sur le web, la page web ne fait qu'écouté.
+// Ainsi le client et le serveur ne communique jamais entre eux.

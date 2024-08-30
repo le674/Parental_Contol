@@ -1,0 +1,87 @@
+﻿
+Spécification serveur:
+0/ il faut créer un compte gmail(recommandé) ou utiliser un compte existant(pour envoyer les site visités).
+1/ il faut permettre à l'adresse mail(destiné à l'envoie) d'autoriser les envois par serveur distant
+	-google account(wich send ), security, turn on less secure acces app
+L'ideal est d'avoir une adresse mail pour chaque produit destiné à la vente.
+note: (Pour 0-1 je peux utiliser mes propre adresse mail exemple : lightningeyes0@gmail.com, lighteningeyes1@gmail.com, ect...)
+
+2/ il faut que le moteur de recherche soit non actif pour que l'app marche
+
+Guide d'utilisation :
+0/ il faut installer sqlit3
+1/ si le problème locked persiste voir au niveau des pars-feux ou:
+	mv places.sqlite places.db
+	cp places.db places.sqlite
+2/ En revanche le parent doit posséder une adresse mail (ex : pierre@gmail.com, jaque@yahoo.fr, ect...)
+
+À faire:
+0/ Il faut trouver le fichier *default* contenu dans home/user/.mozilla/firefox (pour mac os ~/Library/Application Support/Google/Chrome/Default/History) qui contient places.sqlite Fait (à améliorer )
+	- Il faut obtenir l'user sur linux le récupérer avec subprocess("whoami",shell = true)  Fait/ Utiliser « net » pour windows
+	- regarder si il y'a des modification à faire si d'autres moteurs de recherches sont utilisées
+A voir(1/ Scraper + bloquage de sites
+    #if(words[1][:22] != "https://www.google.com"):
+        #if(re.match(r"[Ss][Ee][Xx]",words[1]) or re.match("[Hh][Aa][Rr][Dd][Cc][Oo][Rr][Ee]",words[1]) or re.match("[Bb][Ll][Oo][Ww][Jj][Oo][Bb]",words[1]) or re.match("[Jj][Ee][Uu][Xx]",words[1])):
+        #    with open("/etc/hosts",'a') as file:
+        #        file.write(f"127.0.0.1 {words[1]}\n")
+
+        #url = words[1]#Modifier le scraper par beautiful soup par exemple
+        #page = urlopen(url)
+        #html_bytes = page.read()
+        #html = html_bytes.decode("utf-8")
+        #if("jeux" in html):
+        #    print("I found a game") )
+2/ Envoyer un tableau agréable au visuel au lieu d'un message contenant l'historique
+sous la forme:
+
+colonne 1		colonne2		colonne3
+ date du site visité	 durée de visite	 url du site
+pour la durée de visite elle est inscrite en microseconde donc
+
+3/ Exporter le contole parental sur d'autre plateform que linux
+
+
+Sur linux les localisations des historique sont les suivantes:
+
+pour chrome "~/.config/google-chrome/Default/History"
+pour microsoft edge "~/.config/microsoft-edge-beta/Default/History"
+
+Il semblerait qu'a part firefox ce soit souvent:
+	~/.config/<nom du navigateur>/Default/History
+
+
+
+Pour chorme on fait : 
+
+datetime( visits.visit_time / 1000000 - 11644473600,'unixepoch'); 
+
+Avec:
+strftime('%s','1970-01-01 00:00:00') - strftime('%s','1601-01-01 00:00:00') = 11644473600
+
+On récupère le site lorsque:  (date_actuel - date_de_visits) <= 172800(nombre de second dans deux jours)
+
+pour autres que mozilla:
+SELECT datetime(visits.visit_time / 1000000 - 11644473600,'unixepoch','localtime'), urls.url FROM urls, visits WHERE urls.id = visits.url AND (SELECT(strftime('%s','now') -(visits.visit_time/1000000 - 11644473600)) < 86400);
+
+pour mozilla :
+SELECT datetime(moz_historyvisits.visit_date/1000000,'unixepoch','localtime'), moz_places.url FROM moz_places, moz_historyvisits WHERE moz_places.id = moz_historyvisits.place_id AND (SELECT(strftime('%s','now') -(moz_historyvisits.visit_date/1000000)) < 86400) 
+
+Début du html
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table style="width: 703px; height: 46px;" border="3">
+<tbody>
+<tr style="height: 36px;">
+<td style="width: 204.733px; height: 36px; text-align: center;"><span style="color: #ff0000;">P&eacute;riode de consultation</span></td>
+<td style="width: 226.45px; height: 36px; text-align: center;"><span style="color: #ff0000;">Dur&eacute;e de consultation</span></td>
+<td style="width: 249.817px; height: 36px; text-align: center;"><span style="color: #ff0000;">URL des sites consult&eacute;es</span></td>
+</tr>
+<tr style="height: 29px;">
+<td style="width: 204.733px; height: 10px; text-align: center;">blablabla</td>
+<td style="width: 226.45px; height: 10px; text-align: center;">blablabla</td>
+<td style="width: 249.817px; height: 10px; text-align: center;">blablabla</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+

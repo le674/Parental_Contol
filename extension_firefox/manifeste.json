@@ -1,0 +1,25 @@
+{
+
+  "name":"Extension_firefox",
+  "version":"0.1",
+  "manifest_version": 2,
+
+  "description":"permet d'ajouter la durée des sites visités dans firefox",
+
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+
+  "browser_specific_settings": {
+  "gecko": {
+    "id": "{adamakkouche423346@yahoo.fr}"
+    }
+  },
+
+  "background": [
+    {
+      "scripts": ["extension.js"],
+      "persistent": true
+    }
+  ]
+}
